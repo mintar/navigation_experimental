@@ -2,6 +2,7 @@ build
 *~
 *.pgm
 bin
+*.pyc
 
 #github standard C .gitignore
 # Object files
