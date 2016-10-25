@@ -21,7 +21,7 @@ set(THIS_PACKAGE_ROS_DEPS
   filters
 )
 
-find_package(catkin REQUIRED COMPONENTS ${THIS_PACKAGE_ROS_DEPS})
+find_package(catkin REQUIRED COMPONENTS ${THIS_PACKAGE_ROS_DEPS} cmake_modules)
 find_package(Eigen REQUIRED)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
