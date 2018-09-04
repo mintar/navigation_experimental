@@ -64,6 +64,7 @@ install(FILES bgp_plugin.xml
 install(DIRECTORY
   launch
   matlab
+  python
   rviz
   worlds
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
