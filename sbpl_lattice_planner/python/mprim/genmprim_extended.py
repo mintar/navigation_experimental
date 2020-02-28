@@ -342,7 +342,7 @@ def generateMotionPrimitives(primitive_generator_definitions,args):
             baseendpose_c = basemprimendpts_c[0:3]
             endx_c = np.round((baseendpose_c[0]*np.cos(angle))-(baseendpose_c[1]*np.sin(angle)))
             endy_c = np.round((baseendpose_c[0]*np.sin(angle))+(baseendpose_c[1]*np.cos(angle)))
-            endtheta_c = (angleind+baseendpose_c[2])%numberofangles
+            endtheta_c = np.fmod(angleind-1+baseendpose_c[2], numberofangles)
             endpose_c = np.array(np.hstack((endx_c, endy_c, endtheta_c)))
 
 

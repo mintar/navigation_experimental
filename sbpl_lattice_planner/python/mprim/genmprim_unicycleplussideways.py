@@ -35,7 +35,6 @@ import numpy as np
 import matcompat
 
 # if available import pylab (from matlibplot)
-# if available import pylab (from matlibplot)
 visualize_plt = False
 try:
     import matplotlib.pylab as plt
@@ -156,20 +155,20 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                 
             elif ((currentangle_36000int-7875)%9000) == 0:
                 basemprimendpts_c = 1*basemprimendpts33p75_c[primind, :]  # 1* to force deep copy to avoid reference update below
-                basemprimendpts_c[0] = basemprimendpts33p75_c[primind, 2]
+                basemprimendpts_c[0] = basemprimendpts33p75_c[primind, 1]
                 #%reverse x and y
-                basemprimendpts_c[1] = basemprimendpts33p75_c[primind, 1]
-                basemprimendpts_c[2] = -basemprimendpts33p75_c[primind, 3]
+                basemprimendpts_c[1] = basemprimendpts33p75_c[primind, 0]
+                basemprimendpts_c[2] = -basemprimendpts33p75_c[primind, 2]
                 #%reverse the angle as well
                 angle = currentangle-(78.75*np.pi)/180.
                 print('78p75\n')
                 
             elif ((currentangle_36000int-6750)%9000) == 0:
                 basemprimendpts_c = 1*basemprimendpts22p5_c[int(primind)-1,:] # 1* to force deep copy to avoid reference update below
-                basemprimendpts_c[0] =  basemprimendpts22p5_c[int(primind)-1,1]
+                basemprimendpts_c[0] =  basemprimendpts22p5_c[int(primind)-1, 1]
                 #%reverse x and y
-                basemprimendpts_c[1] =  basemprimendpts22p5_c[int(primind)-1,0]
-                basemprimendpts_c[2] = -basemprimendpts22p5_c[int(primind)-1,2]
+                basemprimendpts_c[1] =  basemprimendpts22p5_c[int(primind)-1, 0]
+                basemprimendpts_c[2] = -basemprimendpts22p5_c[int(primind)-1, 2]
                 #%reverse the angle as well
                 #print('%d : %d %d %d onto %d %d %d\n'%(primind-1,basemprimendpts22p5_c[int(primind)-1,0], basemprimendpts22p5_c[int(primind)-1,1], basemprimendpts22p5_c[int(primind)-1,2], basemprimendpts_c[0], basemprimendpts_c[1], basemprimendpts_c[2]))
                 angle = currentangle-(67.5*np.pi)/180.
@@ -177,16 +176,16 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                 
             elif ((currentangle_36000int-5625)%9000) == 0:
                 basemprimendpts_c = 1*basemprimendpts11p25_c[primind, :] # 1* to force deep copy to avoid reference update below
-                basemprimendpts_c[0] = basemprimendpts11p25_c[primind, 2]
+                basemprimendpts_c[0] = basemprimendpts11p25_c[primind, 1]
                 #%reverse x and y
-                basemprimendpts_c[1] = basemprimendpts11p25_c[primind, 1]
-                basemprimendpts_c[2] = -basemprimendpts11p25_c[primind, 3]
+                basemprimendpts_c[1] = basemprimendpts11p25_c[primind, 0]
+                basemprimendpts_c[2] = -basemprimendpts11p25_c[primind, 2]
                 #%reverse the angle as well
                 angle = currentangle-(56.25*np.pi)/180.
                 print('56p25\n')
                 
             elif ((currentangle_36000int-3375)%9000) == 0:
-                basemprimendpts_c = basemprimendpts33p75_c[primind, :]
+                basemprimendpts_c = basemprimendpts33p75_c[int(primind), :]
                 angle = currentangle-(33.75*np.pi)/180.
                 print('33p75\n')
                 
@@ -196,7 +195,7 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                 print('22p5\n')
                 
             elif ((currentangle_36000int-1125)%9000) == 0:
-                basemprimendpts_c = basemprimendpts11p25_c[primind, :]
+                basemprimendpts_c = basemprimendpts11p25_c[int(primind), :]
                 angle = currentangle-(11.25*np.pi)/180.
                 print('11p25\n')
                 
@@ -210,7 +209,7 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
             additionalactioncostmult = basemprimendpts_c[3]
             endx_c = np.round((baseendpose_c[0]*np.cos(angle))-(baseendpose_c[1]*np.sin(angle)))
             endy_c = np.round((baseendpose_c[0]*np.sin(angle))+(baseendpose_c[1]*np.cos(angle)))
-            endtheta_c = (angleind-1+baseendpose_c[2])%numberofangles
+            endtheta_c = np.fmod(angleind-1+baseendpose_c[2], numberofangles)
             endpose_c = np.array(np.hstack((endx_c, endy_c, endtheta_c)))
             print "endpose_c=",endpose_c            
             print( 'rotation angle=%f\n'% (angle*180./np.pi))
@@ -226,7 +225,7 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                 startpt = np.array(np.hstack((0., 0., currentangle)))
                 endpt = np.array(np.hstack(((endpose_c[0]*resolution), 
                                             (endpose_c[1]*resolution), 
-                                            (( ((angleind-1+baseendpose_c[2])%numberofangles)*2.*np.pi)/numberofangles))))
+                                            (( (np.fmod(angleind-1+baseendpose_c[2], numberofangles))*2.*np.pi)/numberofangles))))
                 
                 print "startpt =",startpt
                 print "endpt   =",endpt
@@ -234,10 +233,10 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                 if np.logical_or(np.logical_and(endx_c == 0., endy_c == 0.), baseendpose_c[2] == 0.):
                     #%turn in place or move forward            
                     for iind in np.arange(1., (numofsamples)+1):
-                        fraction = float(iind-1)/(numofsamples)                 
+                        fraction = float(iind-1)/(numofsamples - 1)                 
                         intermcells_m[int(iind)-1,:] = np.array((startpt[0]+(endpt[0]-startpt[0])*fraction, startpt[1]+(endpt[1]-startpt[1])*fraction, 0))
                         rotation_angle = baseendpose_c[2]*(2.*np.pi/numberofangles)
-                        intermcells_m[int(iind)-1,2] = (startpt[2]+rotation_angle*fraction)%(2.*np.pi)
+                        intermcells_m[int(iind)-1,2] = np.fmod(startpt[2]+rotation_angle*fraction, (2.*np.pi))
                         #print " ",iind,"  of ",numofsamples," fraction=",fraction," rotation=",rotation_angle
                     
                 else:
@@ -260,7 +259,7 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                     #print "tv=",tv
 
                     if l<0.:
-                        print('WARNING: l = %d < 0 -> bad action start/end points\n'%(l))
+                        print('WARNING: l = %f < 0 -> bad action start/end points\n'%(l))
                         l = 0.
                     
                     
@@ -272,7 +271,7 @@ def genmprim_unicycleplussideways(outfilename,visualize_ = False):
                     #%tv = (tvx + tvy)/2.0;              
                     #%generate samples
                     for iind in np.arange(1, numofsamples+1):
-                        dt = (iind-1)/(numofsamples)
+                        dt = (iind-1)/(numofsamples-1)
                         #%dtheta = rv*dt + startpt(3);
                         #%intermcells_m(iind,:) = [startpt(1) + tv/rv*(sin(dtheta) - sin(startpt(3))) ...
                         #%                        startpt(2) - tv/rv*(cos(dtheta) - cos(startpt(3))) ...

@@ -299,7 +299,7 @@ def genmprim(outfilename):
             additionalactioncostmult = basemprimendpts_c[3]
             endx_c = np.round((baseendpose_c[0]*np.cos(angle))-(baseendpose_c[1]*np.sin(angle)))
             endy_c = np.round((baseendpose_c[0]*np.sin(angle))+(baseendpose_c[1]*np.cos(angle)))
-            endtheta_c = (angleind-1+baseendpose_c[2])%numberofangles
+            endtheta_c = np.fmod(angleind-1+baseendpose_c[2], numberofangles)
             endpose_c = np.array(np.hstack((endx_c, endy_c, endtheta_c)))
             print "endpose_c=",endpose_c            
             print( 'rotation angle=%f\n'% (angle*180./np.pi))
@@ -314,17 +314,17 @@ def genmprim(outfilename):
                 startpt = np.array(np.hstack((0., 0., currentangle)))
                 endpt = np.array(np.hstack(((endpose_c[0]*resolution), 
                                             (endpose_c[1]*resolution), 
-                                            (( ((angleind-1+baseendpose_c[2])%numberofangles)*2.*np.pi)/numberofangles))))
-				
+                                            (( (np.fmod(angleind-1+baseendpose_c[2], numberofangles))*2.*np.pi)/numberofangles))))
+                
                 print "startpt =",startpt
                 print "endpt   =",endpt
 				
                 intermcells_m = np.zeros((numofsamples, 3))
                 for iind in np.arange(1, (numofsamples)+1):
-                    fraction = float(iind-1)/(numofsamples)					
+                    fraction = float(iind-1)/(numofsamples - 1)                 
                     intermcells_m[int(iind)-1,:] = np.array((startpt[0]+(endpt[0]-startpt[0])*fraction, startpt[1]+(endpt[1]-startpt[1])*fraction, 0))
                     rotation_angle = baseendpose_c[2]*(2.*np.pi/numberofangles)
-                    intermcells_m[int(iind)-1,2] = (startpt[2]+rotation_angle*fraction)%(2.*np.pi)
+                    intermcells_m[int(iind)-1,2] = np.fmod(startpt[2]+rotation_angle*fraction, (2.*np.pi))
                     #print " ",iind,"  of ",numofsamples," fraction=",fraction," rotation=",rotation_angle
 
             print "  intermcells=",intermcells_m
